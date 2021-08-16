@@ -13,13 +13,14 @@ MERGE (mark)-[:COLLEAGUES {since: date("2018-02-01")}]->(jennifer)
 MERGE (mark)-[:COLLEAGUES {since: date("2013-05-01")}]->(michael);
 ----
 
-The following changes the relationship type between Jim and Alistair from `COLLEAGUES` to `FROLLEAGUES`:
+The following changes the label on Mark, Jennifer, and Michael from `Engineer` to `DevRel`:
 
 [source,cypher]
 ----
-MATCH (:Engineer {name: "Jim"})-[rel]->(:Engineer {name: "Alistair"})
-WITH collect(rel) AS rels
-CALL apoc.refactor.rename.type("COLLEAGUES", "FROLLEAGUES", rels)
+MATCH (person:Engineer)
+WHERE person.name IN ["Mark", "Jennifer", "Michael"]
+WITH collect(person) AS people
+CALL apoc.refactor.rename.label("Engineer", "DevRel", people)
 YIELD batches, total, timeTaken, committedOperations
 RETURN batches, total, timeTaken, committedOperations;
 ----
